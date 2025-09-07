@@ -1,6 +1,7 @@
 # Modified from:
 # https://gist.github.com/flatz/3f242ab3c550d361f8c6d031b07fb6b1
 
+import os
 import json
 import subprocess
 import sys
@@ -200,9 +201,12 @@ def decrypt(password: str, encrypted_key: str, prefix: bytes, iterations: int) -
     return decrypted_key
 
 
-if __name__ == "__main__":
-    path_to_sig = "C:\\Users\\okas\\AppData\\Roaming\\Signal"
-    db_key = get_key(Path(path_to_sig), "")
+if __name__ == "__main__" and sys.platform == "win32":
+    user_profile = os.environ.get("USERPROFILE")
+    if not user_profile:
+        raise EnvironmentError("USERPROFILE environment variable not found")
+
+    path_to_sig = Path(user_profile) / "AppData" / "Roaming" / "Signal"
+    db_key = get_key(path_to_sig, "")
     
-    print(db_key)
-    
+    print("Decryption Key:", db_key)    

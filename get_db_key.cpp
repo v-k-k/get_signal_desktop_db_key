@@ -113,7 +113,12 @@ std::string get_key(const std::string& appdir) {
 
 int main() {
     try {
-        std::string path_to_sig = "C:\\Users\\okas\\AppData\\Roaming\\Signal";
+        char userprofile[MAX_PATH];
+		DWORD len = GetEnvironmentVariableA("USERPROFILE", userprofile, sizeof(userprofile));
+		if (len == 0 || len > sizeof(userprofile))
+			throw std::runtime_error("Failed to retrieve USERPROFILE from environment");
+
+		std::string path_to_sig = std::string(userprofile) + "\\AppData\\Roaming\\Signal";
         std::string db_key = get_key(path_to_sig);
         std::cout << "Decryption Key: " << db_key << std::endl;
     } catch (const std::exception& ex) {
